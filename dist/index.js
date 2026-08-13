@@ -19,6 +19,14 @@ function toggleTodo(id) {
         localStorage.setItem("todos", JSON.stringify(todos));
     }
 }
+// Update a Todo's title and save the changes
+function editTodo(id, newTitle) {
+    const todo = todos.find((todo) => todo.id === id);
+    if (todo) {
+        todo.title = newTitle;
+        localStorage.setItem("todos", JSON.stringify(todos));
+    }
+}
 // Get the HTML elements we need to interact with
 const todoInput = document.getElementById("todo-input");
 const addButton = document.getElementById("add-button");
@@ -56,10 +64,21 @@ function renderTodos() {
                 removeTodo(todo.id);
                 renderTodos();
             });
+            // Create button to edit the Todo
+            const editButton = document.createElement("button");
+            editButton.textContent = "Edit";
+            editButton.addEventListener("click", () => {
+                const newTitle = prompt("Edit Todo:", todo.title);
+                if (newTitle !== null && newTitle.trim()) {
+                    editTodo(todo.id, newTitle.trim());
+                    renderTodos();
+                }
+            });
             // Visually mark completed Todos
             li.style.textDecoration = todo.completed ? "line-through" : "none";
             li.appendChild(completeButton);
             li.appendChild(deleteButton);
+            li.appendChild(editButton);
             todoList.appendChild(li);
         });
     }
